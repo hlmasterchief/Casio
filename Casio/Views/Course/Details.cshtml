@@ -1,0 +1,127 @@
+﻿@model Casio.Models.Course
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Course</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Code)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Code)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @*@Html.DisplayNameFor(model => model.Teacher.Name)*@
+            Teacher
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Teacher.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Credit)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Credit)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        @if (User.IsInRole("Student"))
+        {
+            foreach (var item in Model.Enrollments)
+            {
+                <dt>
+                    @Html.DisplayNameFor(model => item.Grade)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => item.Grade)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => item.DateModified)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => item.DateModified)
+                </dd>
+            }
+        }
+    </dl>
+</div>
+
+@if (User.IsInRole("Teacher"))
+{
+    <h4>List of students in this course</h4>
+    if (Model.Enrollments == null)
+    {
+        <hr />
+        <p>No students found in this course.</p>
+    }
+
+    <table class="table">
+        <tr>
+            <th>
+                Username
+            </th>
+            <th>
+                Student
+            </th>
+            <th>
+                Grade
+            </th>
+            <th>
+            </th>
+        </tr>
+
+        @foreach (var item in Model.Enrollments)
+        {
+            <tr>
+                <td>
+                    @item.Student.UserName
+                </td>
+                <td>
+                    @item.Student.Name
+                </td>
+                <td>
+                    @item.Grade
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Enrollment", new { id = item.Id }, null) |
+                    @Html.ActionLink("Details", "Details", "Enrollment", new { id = item.Id }, null) |
+                    @Html.ActionLink("Delete", "Delete", "Enrollment", new { id = item.Id }, null)
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+<p>
+    @if (!User.IsInRole("Student"))
+    {
+        <span>@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |</span>
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>
